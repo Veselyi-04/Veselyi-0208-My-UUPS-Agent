@@ -4,3 +4,4 @@ module.exports = {
   testPathIgnorePatterns: ['dist'],
   testTimeout: 30000000
 };
+
