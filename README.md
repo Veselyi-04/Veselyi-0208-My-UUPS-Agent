@@ -1,30 +1,12 @@
-# UUPS Agent
+Veselyi-0208-My-UUPS-Agent
 
-- https://github.com/hack3r-0m/oz-uups-forta-agent
+This agent detects malicious transactions to the openzeppelin non-ideatised UUPS proxy. (For more information on the vulnerability, see https://forum.openzeppelin.com/t/uupsupgradeable-vulnerability-post-mortem/15680/8)
 
-## Description
+It is important to distinguish between UUPS Proxy and Transpararent Upgradeable Proxy (since they both emit an Upgradeed event with the same signature) to reduce false positives. Hence, the agent checks for an owner slot that is using the Transpararent Upgradeable proxy, if the slot is empty, it is a UUPS proxy.
 
-This agent detects malicious transactions to un-initialized UUPS proxy of openzeppelin. (See https://forum.openzeppelin.com/t/uupsupgradeable-vulnerability-post-mortem/15680/8 for more info regarding vulnerability)
+The agent reports that both the Upgrade event and the AdminChanged event are raised with a high degree of certainty in one transaction, as there is a very high probability that this is an exploit.
 
-It is important to distinguish between UUPS proxy and Transpararent Upgradable proxy (since they both emit Upgraded event with same signature) to reduce false positives. Hence, agent checks for owner slot which Transpararent Upgradable proxy uses, if slot is empty, it is UUPS proxy.
-
-Agent reports finding with high confidence when both "Upgraded" event & "AdminChanged" are emitted in single transaction as there is very high possibility it is an exploit.
-
-Checking for code size to be 0 will not work as `handleTransaction` is triggered while exploit transaction is in pending state and can result in ambiguity.
-
-## Alerts
-
-- OZ-UUPS-01
-  - When Upgraded event is emitted and proxy is idenfied to be UUPS (and not Transparent Upgradable)
-  - Type is set to "suspicious"
-  - Severity is set to "unknown"
-  - metadata includes new implementation along with transaction hash
-
-- OZ-UUPS-02
-  - When Upgraded and AdminChanged events are emitted and proxy is idenfied to be UUPS (and not Transparent Upgradable)
-  - Type is set to "exploit"
-  - Severity is set to "critical"
-  - metadata includes new implementation, new owner & transaction hash
+Checking code size 0 will not work, as it does when the exploit transaction is pending, and can lead to ambiguity.
 
 ## Test Data
 
